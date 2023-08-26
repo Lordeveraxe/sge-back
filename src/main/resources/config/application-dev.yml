@@ -32,9 +32,10 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/sge-back?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/sgeapi?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=trueuseUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true}
+    username: ${MYSQL_USER:root}
     password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -43,18 +44,32 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
-  liquibase:
-    # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev, faker
+  jpa:
+    hibernate:
+      ddl-auto: update
   mail:
     host: localhost
     port: 25
     username:
     password:
-  messages:
-    cache-duration: PT1S # 1 second, see the ISO 8601 standard
-  thymeleaf:
-    cache: false
+    messages:
+      cache-duration: PT1S # 1 second, see the ISO 8601 standard
+    thymeleaf:
+      cache: false
+    sleuth:
+      # https://github.com/spring-projects/spring-framework/issues/27844#issuescomment-1002866885
+      # https://github.com/spring-cloud/spring-cloud-sleuth/issues/2094
+      async:
+        enabled: false
+      enabled: false
+      sampler:
+        probability: 1 # report 100% of traces
+    zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
+      base-url: http://localhost:9411
+      enabled: false
+      locator:
+        discovery:
+          enabled: true
 
 server:
   port: 8080
