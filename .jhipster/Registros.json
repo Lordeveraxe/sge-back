@@ -1,0 +1,29 @@
+{
+  "applications": "*",
+  "changelogDate": "20230826145152",
+  "dto": "mapstruct",
+  "entityTableName": "registros",
+  "fields": [
+    {
+      "fieldName": "fechaRegistroVariable",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "registroVariableContador",
+      "fieldType": "String"
+    }
+  ],
+  "javadoc": "Entidad para el registro de los Actividades",
+  "name": "Registros",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "contadores",
+      "relationshipName": "contadores",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

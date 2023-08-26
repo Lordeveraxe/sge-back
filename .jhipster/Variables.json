@@ -1,0 +1,26 @@
+{
+  "applications": "*",
+  "changelogDate": "20230826145153",
+  "dto": "mapstruct",
+  "entityTableName": "variables",
+  "fields": [
+    {
+      "fieldName": "variables",
+      "fieldType": "String"
+    }
+  ],
+  "javadoc": "Entidad para el registro de los Pruebas",
+  "name": "Variables",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "contadores",
+      "otherEntityRelationshipName": "variables",
+      "relationshipName": "contadores",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

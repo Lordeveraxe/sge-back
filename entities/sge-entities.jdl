@@ -1,0 +1,38 @@
+enum Estado {
+ACTIVO(A),
+INACTIVO(I)
+}
+enum TipoContador {
+GENERADORES(Generadores),
+CONTADORES(Contadores),
+PRODUCCION(Produccion)
+}
+/**Entidad para el registro de los Contadores**/
+entity Contadores {
+	tipoContador TipoContador
+	fechaIngresoContador Instant
+	tag String
+	estado Estado
+}
+/**Entidad para el registro de los Pruebas**/
+entity Variables {
+	variables String
+}
+/**Entidad para el registro de los Pruebas**/
+entity Campos {
+	nombreCampo String
+}
+/**Entidad para el registro de los Actividades**/
+entity Registros {
+	fechaRegistroVariable Instant
+	registroVariableContador String
+}
+
+relationship OneToMany {
+    Contadores to Registros{contadores}
+    Variables to Contadores{variables}
+    Campos to Contadores{campo}
+}
+paginate  Contadores, Variables, Campos, Registros with pagination
+service * with serviceClass
+dto * with mapstruct

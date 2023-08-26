@@ -1,0 +1,26 @@
+{
+  "applications": "*",
+  "changelogDate": "20230826145150",
+  "dto": "mapstruct",
+  "entityTableName": "campos",
+  "fields": [
+    {
+      "fieldName": "nombreCampo",
+      "fieldType": "String"
+    }
+  ],
+  "javadoc": "Entidad para el registro de los Pruebas",
+  "name": "Campos",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "contadores",
+      "otherEntityRelationshipName": "campo",
+      "relationshipName": "contadores",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

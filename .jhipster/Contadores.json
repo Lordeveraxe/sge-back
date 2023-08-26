@@ -1,0 +1,52 @@
+{
+  "applications": "*",
+  "changelogDate": "20230826145151",
+  "dto": "mapstruct",
+  "entityTableName": "contadores",
+  "fields": [
+    {
+      "fieldName": "tipoContador",
+      "fieldType": "TipoContador",
+      "fieldValues": "GENERADORES (Generadores),CONTADORES (Contadores),PRODUCCION (Produccion)"
+    },
+    {
+      "fieldName": "fechaIngresoContador",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "tag",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "estado",
+      "fieldType": "Estado",
+      "fieldValues": "ACTIVO (A),INACTIVO (I)"
+    }
+  ],
+  "javadoc": "Entidad para el registro de los Contadores",
+  "name": "Contadores",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "registros",
+      "otherEntityRelationshipName": "contadores",
+      "relationshipName": "registros",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "variables",
+      "relationshipName": "variables",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "campos",
+      "relationshipName": "campo",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
