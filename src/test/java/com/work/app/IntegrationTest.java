@@ -1,6 +1,5 @@
 package com.work.app;
 
-import com.work.app.SgeBackApp;
 import com.work.app.config.AsyncSyncConfiguration;
 import com.work.app.config.EmbeddedSQL;
 import java.lang.annotation.ElementType;

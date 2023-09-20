@@ -14,7 +14,6 @@ import com.work.app.security.AuthoritiesConstants;
 import com.work.app.service.UserService;
 import com.work.app.service.dto.AdminUserDTO;
 import com.work.app.service.dto.PasswordChangeDTO;
-import com.work.app.service.dto.UserDTO;
 import com.work.app.web.rest.vm.KeyAndPasswordVM;
 import com.work.app.web.rest.vm.ManagedUserVM;
 import java.time.Instant;
