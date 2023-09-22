@@ -72,7 +72,7 @@ public final class SecurityUtils {
      * Checks if the current user has any of the authorities.
      *
      * @param authorities the authorities to check.
-     * @return true if the current user has any of the authorities, false otherwise.
+     * @return true i the current user has any of the authorities, false otherwise.
      */
     public static boolean hasCurrentUserAnyOfAuthorities(String... authorities) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
