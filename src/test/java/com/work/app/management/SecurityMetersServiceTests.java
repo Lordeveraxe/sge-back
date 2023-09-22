@@ -9,6 +9,9 @@ import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Pruebas de la clase SecurityMetersService.
+ */
 class SecurityMetersServiceTests {
 
     private static final String INVALID_TOKENS_METER_EXPECTED_NAME = "security.authentication.invalid-tokens";
@@ -17,6 +20,9 @@ class SecurityMetersServiceTests {
 
     private SecurityMetersService securityMetersService;
 
+    /**
+     * Configuración de las pruebas.
+     */
     @BeforeEach
     public void setup() {
         meterRegistry = new SimpleMeterRegistry();
@@ -24,16 +30,15 @@ class SecurityMetersServiceTests {
         securityMetersService = new SecurityMetersService(meterRegistry);
     }
 
+    /**
+     * Prueba que los contadores para diferentes causas de tokens JWT no válidos se crean en el registro de métricas.
+     */
     @Test
     void testInvalidTokensCountersByCauseAreCreated() {
         meterRegistry.get(INVALID_TOKENS_METER_EXPECTED_NAME).counter();
-
         meterRegistry.get(INVALID_TOKENS_METER_EXPECTED_NAME).tag("cause", "expired").counter();
-
         meterRegistry.get(INVALID_TOKENS_METER_EXPECTED_NAME).tag("cause", "unsupported").counter();
-
         meterRegistry.get(INVALID_TOKENS_METER_EXPECTED_NAME).tag("cause", "invalid-signature").counter();
-
         meterRegistry.get(INVALID_TOKENS_METER_EXPECTED_NAME).tag("cause", "malformed").counter();
 
         Collection<Counter> counters = meterRegistry.find(INVALID_TOKENS_METER_EXPECTED_NAME).counters();
