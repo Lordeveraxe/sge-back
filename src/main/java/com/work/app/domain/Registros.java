@@ -1,9 +1,9 @@
 package com.work.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import javax.persistence.*;
 
 /**
  * Entidad para el registro de los Actividades

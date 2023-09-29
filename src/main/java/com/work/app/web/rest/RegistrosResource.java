@@ -4,6 +4,7 @@ import com.work.app.repository.RegistrosRepository;
 import com.work.app.service.RegistrosService;
 import com.work.app.service.dto.RegistrosDTO;
 import com.work.app.web.rest.errors.BadRequestAlertException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -27,6 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
 public class RegistrosResource {
 
     private final Logger log = LoggerFactory.getLogger(RegistrosResource.class);
@@ -142,7 +144,7 @@ public class RegistrosResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of registros in body.
      */
     @GetMapping("/registros")
-    public ResponseEntity<List<RegistrosDTO>> getAllRegistros(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<RegistrosDTO>> getAllRegistros(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Registros");
         Page<RegistrosDTO> page = registrosService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

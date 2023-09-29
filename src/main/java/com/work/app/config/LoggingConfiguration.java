@@ -5,6 +5,9 @@ import static tech.jhipster.config.logging.LoggingUtils.*;
 import ch.qos.logback.classic.LoggerContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import tech.jhipster.config.JHipsterProperties;
  * Configures the console and Logstash log appenders from the app properties
  */
 @Configuration
+@SecurityScheme(name = "bearerAuth", scheme = "bearer", bearerFormat = "JWT", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class LoggingConfiguration {
 
     public LoggingConfiguration(

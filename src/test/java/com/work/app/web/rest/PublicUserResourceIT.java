@@ -9,7 +9,7 @@ import com.work.app.IntegrationTest;
 import com.work.app.domain.User;
 import com.work.app.repository.UserRepository;
 import com.work.app.security.AuthoritiesConstants;
-import jakarta.persistence.EntityManager;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

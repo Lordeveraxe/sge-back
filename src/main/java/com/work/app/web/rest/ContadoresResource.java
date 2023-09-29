@@ -4,6 +4,7 @@ import com.work.app.repository.ContadoresRepository;
 import com.work.app.service.ContadoresService;
 import com.work.app.service.dto.ContadoresDTO;
 import com.work.app.web.rest.errors.BadRequestAlertException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -27,6 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
 public class ContadoresResource {
 
     private final Logger log = LoggerFactory.getLogger(ContadoresResource.class);
@@ -142,7 +144,7 @@ public class ContadoresResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contadores in body.
      */
     @GetMapping("/contadores")
-    public ResponseEntity<List<ContadoresDTO>> getAllContadores(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<ContadoresDTO>> getAllContadores(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Contadores");
         Page<ContadoresDTO> page = contadoresService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

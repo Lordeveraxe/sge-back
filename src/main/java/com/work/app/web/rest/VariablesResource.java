@@ -4,6 +4,7 @@ import com.work.app.repository.VariablesRepository;
 import com.work.app.service.VariablesService;
 import com.work.app.service.dto.VariablesDTO;
 import com.work.app.web.rest.errors.BadRequestAlertException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -27,6 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "bearerAuth")
 public class VariablesResource {
 
     private final Logger log = LoggerFactory.getLogger(VariablesResource.class);
@@ -142,7 +144,7 @@ public class VariablesResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of variables in body.
      */
     @GetMapping("/variables")
-    public ResponseEntity<List<VariablesDTO>> getAllVariables(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<VariablesDTO>> getAllVariables(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Variables");
         Page<VariablesDTO> page = variablesService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

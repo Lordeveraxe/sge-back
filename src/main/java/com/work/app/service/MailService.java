@@ -1,10 +1,10 @@
 package com.work.app.service;
 
 import com.work.app.domain.User;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -14,7 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 import tech.jhipster.config.JHipsterProperties;
 
 /**
@@ -25,12 +25,9 @@ import tech.jhipster.config.JHipsterProperties;
 @Service
 public class MailService {
 
-    private final Logger log = LoggerFactory.getLogger(MailService.class);
-
     private static final String USER = "user";
-
     private static final String BASE_URL = "baseUrl";
-
+    private final Logger log = LoggerFactory.getLogger(MailService.class);
     private final JHipsterProperties jHipsterProperties;
 
     private final JavaMailSender javaMailSender;
@@ -93,6 +90,20 @@ public class MailService {
     }
 
     @Async
+    public void sendEmailFromTemplatePrubeas(String user, String templateName, String titleKey) {
+        if (user == null) {
+            log.debug("Email doesn't exist for user '{}'");
+            return;
+        }
+        Locale locale = Locale.getDefault(); // Puedes cambiar la configuración local según tus necesidades
+        Context context = new Context(locale);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmail(user, subject, content, false, true);
+    }
+
+    @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
@@ -108,5 +119,23 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendPruebaUrgenteMail(String user) {
+        log.debug("Sending password reset email to '{}'", user);
+        sendEmailFromTemplatePrubeas(user, "mail/pruebaErrorEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendEmailFromPrueba(String userEmail, String templateName, String titleKey) {
+        if (userEmail == null) {
+            log.debug("Email doesn't exist for user with email '{}'", userEmail);
+            return;
+        }
+        Locale locale = Locale.getDefault(); // Puedes cambiar la configuración local según tus necesidades
+        Context context = new Context(locale);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        sendEmail(userEmail, "mail/testEmail", "email.test.title", false, false);
     }
 }

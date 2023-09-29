@@ -1,4 +1,3 @@
-// Importaciones necesarias para las pruebas
 package com.work.app.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,18 +15,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * Clase de prueba para la clase utilitaria {@link SecurityUtils}.
+ * Test class for the {@link SecurityUtils} utility class.
  */
 class SecurityUtilsUnitTest {
 
-    // Método que se ejecuta antes y después de cada prueba para limpiar el contexto de seguridad
     @BeforeEach
     @AfterEach
     void cleanup() {
         SecurityContextHolder.clearContext();
     }
 
-    // Prueba que verifica si se puede obtener el nombre de usuario actual
     @Test
     void testGetCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -37,7 +34,6 @@ class SecurityUtilsUnitTest {
         assertThat(login).contains("admin");
     }
 
-    // Prueba que verifica si se puede obtener el token JWT del usuario actual
     @Test
     void testGetCurrentUserJWT() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -47,7 +43,6 @@ class SecurityUtilsUnitTest {
         assertThat(jwt).contains("token");
     }
 
-    // Prueba que verifica si el usuario actual está autenticado
     @Test
     void testIsAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -57,7 +52,6 @@ class SecurityUtilsUnitTest {
         assertThat(isAuthenticated).isTrue();
     }
 
-    // Prueba que verifica que un usuario anónimo no esté autenticado
     @Test
     void testAnonymousIsNotAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -69,7 +63,6 @@ class SecurityUtilsUnitTest {
         assertThat(isAuthenticated).isFalse();
     }
 
-    // Prueba que verifica si el usuario actual tiene la autoridad especificada
     @Test
     void testHasCurrentUserThisAuthority() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -82,7 +75,6 @@ class SecurityUtilsUnitTest {
         assertThat(SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)).isFalse();
     }
 
-    // Prueba que verifica si el usuario actual tiene al menos una de las autoridades especificadas
     @Test
     void testHasCurrentUserAnyOfAuthorities() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
@@ -95,7 +87,6 @@ class SecurityUtilsUnitTest {
         assertThat(SecurityUtils.hasCurrentUserAnyOfAuthorities(AuthoritiesConstants.ANONYMOUS, AuthoritiesConstants.ADMIN)).isFalse();
     }
 
-    // Prueba que verifica si el usuario actual no tiene ninguna de las autoridades especificadas
     @Test
     void testHasCurrentUserNoneOfAuthorities() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
