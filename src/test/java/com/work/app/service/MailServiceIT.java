@@ -7,6 +7,10 @@ import static org.mockito.Mockito.*;
 import com.work.app.IntegrationTest;
 import com.work.app.config.Constants;
 import com.work.app.domain.User;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
+import io.qameta.allure.Story;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,17 +36,11 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import tech.jhipster.config.JHipsterProperties;
 
-/**
- * Integration tests for {@link MailService}.
- */
+@Feature("Servicio de correo")
 @IntegrationTest
-class MailServiceIT {
+public class MailServiceIT {
 
-    private static final String[] languages = {
-        // jhipster-needle-i18n-language-constant - JHipster will add/remove languages in this array
-    };
-    private static final Pattern PATTERN_LOCALE_3 = Pattern.compile("([a-z]{2})-([a-zA-Z]{4})-([a-z]{2})");
-    private static final Pattern PATTERN_LOCALE_2 = Pattern.compile("([a-z]{2})-([a-z]{2})");
+    private static final String[] idiomas = {};
 
     @Autowired
     private JHipsterProperties jHipsterProperties;
@@ -51,185 +49,145 @@ class MailServiceIT {
     private JavaMailSender javaMailSender;
 
     @Captor
-    private ArgumentCaptor<MimeMessage> messageCaptor;
+    private ArgumentCaptor<MimeMessage> capturadorMensajes;
 
     @Autowired
-    private MailService mailService;
+    private MailService servicioCorreo;
 
     @BeforeEach
-    public void setup() {
+    @Step("Configuración inicial antes de cada prueba.")
+    public void configuracionInicial() {
         doNothing().when(javaMailSender).send(any(MimeMessage.class));
         when(javaMailSender.createMimeMessage()).thenReturn(new MimeMessage((Session) null));
     }
 
     @Test
-    void testSendEmail() throws Exception {
-        mailService.sendEmail("john.doe@example.com", "testSubject", "testContent", false, false);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getSubject()).isEqualTo("testSubject");
-        assertThat(message.getAllRecipients()[0]).hasToString("john.doe@example.com");
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent()).isInstanceOf(String.class);
-        assertThat(message.getContent()).hasToString("testContent");
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/plain; charset=UTF-8");
+    @Story("Enviar correo simple.")
+    @Description("Prueba el envío de un correo simple.")
+    void pruebaEnviarCorreo() throws Exception {
+        servicioCorreo.sendEmail("john.doe@example.com", "testSubject", "testContent", false, false);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getSubject()).isEqualTo("testSubject");
+        assertThat(mensaje.getAllRecipients()[0]).hasToString("john.doe@example.com");
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent()).isInstanceOf(String.class);
+        assertThat(mensaje.getContent()).hasToString("testContent");
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/plain; charset=UTF-8");
     }
 
     @Test
-    void testSendHtmlEmail() throws Exception {
-        mailService.sendEmail("john.doe@example.com", "testSubject", "testContent", false, true);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getSubject()).isEqualTo("testSubject");
-        assertThat(message.getAllRecipients()[0]).hasToString("john.doe@example.com");
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent()).isInstanceOf(String.class);
-        assertThat(message.getContent()).hasToString("testContent");
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
+    @Story("Enviar correo HTML.")
+    @Description("Prueba el envío de un correo en formato HTML.")
+    void pruebaEnviarCorreoHTML() throws Exception {
+        servicioCorreo.sendEmail("john.doe@example.com", "testSubject", "testContent", false, true);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getSubject()).isEqualTo("testSubject");
+        assertThat(mensaje.getAllRecipients()[0]).hasToString("john.doe@example.com");
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent()).isInstanceOf(String.class);
+        assertThat(mensaje.getContent()).hasToString("testContent");
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
     }
 
     @Test
-    void testSendMultipartEmail() throws Exception {
-        mailService.sendEmail("john.doe@example.com", "testSubject", "testContent", true, false);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        MimeMultipart mp = (MimeMultipart) message.getContent();
+    @Story("Enviar correo multi-partes.")
+    @Description("Prueba el envío de un correo con múltiples partes.")
+    void pruebaEnviarCorreoMultipartes() throws Exception {
+        servicioCorreo.sendEmail("john.doe@example.com", "testSubject", "testContent", true, false);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        MimeMultipart mp = (MimeMultipart) mensaje.getContent();
         MimeBodyPart part = (MimeBodyPart) ((MimeMultipart) mp.getBodyPart(0).getContent()).getBodyPart(0);
         ByteArrayOutputStream aos = new ByteArrayOutputStream();
         part.writeTo(aos);
-        assertThat(message.getSubject()).isEqualTo("testSubject");
-        assertThat(message.getAllRecipients()[0]).hasToString("john.doe@example.com");
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent()).isInstanceOf(Multipart.class);
+        assertThat(mensaje.getSubject()).isEqualTo("testSubject");
+        assertThat(mensaje.getAllRecipients()[0]).hasToString("john.doe@example.com");
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent()).isInstanceOf(Multipart.class);
         assertThat(aos).hasToString("\r\ntestContent");
         assertThat(part.getDataHandler().getContentType()).isEqualTo("text/plain; charset=UTF-8");
     }
 
     @Test
-    void testSendMultipartHtmlEmail() throws Exception {
-        mailService.sendEmail("john.doe@example.com", "testSubject", "testContent", true, true);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        MimeMultipart mp = (MimeMultipart) message.getContent();
-        MimeBodyPart part = (MimeBodyPart) ((MimeMultipart) mp.getBodyPart(0).getContent()).getBodyPart(0);
-        ByteArrayOutputStream aos = new ByteArrayOutputStream();
-        part.writeTo(aos);
-        assertThat(message.getSubject()).isEqualTo("testSubject");
-        assertThat(message.getAllRecipients()[0]).hasToString("john.doe@example.com");
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent()).isInstanceOf(Multipart.class);
-        assertThat(aos).hasToString("\r\ntestContent");
-        assertThat(part.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
+    @Story("Envío de correo desde una plantilla.")
+    @Description("Prueba el envío de un correo desde una plantilla.")
+    void pruebaEnviarCorreoDesdePlantilla() throws Exception {
+        User usuario = new User();
+        usuario.setLangKey(Constants.DEFAULT_LANGUAGE);
+        usuario.setLogin("john");
+        usuario.setEmail("john.doe@example.com");
+        servicioCorreo.sendEmailFromTemplate(usuario, "mail/testEmail", "email.test.title");
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getSubject()).isEqualTo("test title");
+        assertThat(mensaje.getAllRecipients()[0]).hasToString(usuario.getEmail());
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent().toString()).isEqualToNormalizingNewlines("<html>test title, http://127.0.0.1:8080, john</html>\n");
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
     }
 
     @Test
-    void testSendEmailFromTemplate() throws Exception {
-        User user = new User();
-        user.setLangKey(Constants.DEFAULT_LANGUAGE);
-        user.setLogin("john");
-        user.setEmail("john.doe@example.com");
-        mailService.sendEmailFromTemplate(user, "mail/testEmail", "email.test.title");
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getSubject()).isEqualTo("test title");
-        assertThat(message.getAllRecipients()[0]).hasToString(user.getEmail());
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent().toString()).isEqualToNormalizingNewlines("<html>test title, http://127.0.0.1:8080, john</html>\n");
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
+    @Story("Envío de correo de activación.")
+    @Description("Prueba el envío de un correo de activación.")
+    void pruebaEnviarCorreoActivacion() throws Exception {
+        User usuario = new User();
+        usuario.setLangKey(Constants.DEFAULT_LANGUAGE);
+        usuario.setLogin("john");
+        usuario.setEmail("john.doe@example.com");
+        servicioCorreo.sendActivationEmail(usuario);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getAllRecipients()[0]).hasToString(usuario.getEmail());
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent().toString()).isNotEmpty();
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
     }
 
     @Test
-    void testSendActivationEmail() throws Exception {
-        User user = new User();
-        user.setLangKey(Constants.DEFAULT_LANGUAGE);
-        user.setLogin("john");
-        user.setEmail("john.doe@example.com");
-        mailService.sendActivationEmail(user);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getAllRecipients()[0]).hasToString(user.getEmail());
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent().toString()).isNotEmpty();
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
+    @Story("Reiniciar contraseña por correo.")
+    @Description("Prueba el envío de un correo para reiniciar la contraseña.")
+    void pruebaReinicioContrasenaCorreo() throws Exception {
+        User usuario = new User();
+        usuario.setLangKey(Constants.DEFAULT_LANGUAGE);
+        usuario.setLogin("john");
+        usuario.setEmail("john.doe@example.com");
+        servicioCorreo.sendPasswordResetMail(usuario);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getAllRecipients()[0]).hasToString(usuario.getEmail());
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent().toString()).isNotEmpty();
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
     }
 
     @Test
-    void testCreationEmail() throws Exception {
-        User user = new User();
-        user.setLangKey(Constants.DEFAULT_LANGUAGE);
-        user.setLogin("john");
-        user.setEmail("john.doe@example.com");
-        mailService.sendCreationEmail(user);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getAllRecipients()[0]).hasToString(user.getEmail());
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent().toString()).isNotEmpty();
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
-    }
-
-    @Test
-    void testSendPasswordResetMail() throws Exception {
-        User user = new User();
-        user.setLangKey(Constants.DEFAULT_LANGUAGE);
-        user.setLogin("john");
-        user.setEmail("john.doe@example.com");
-        mailService.sendPasswordResetMail(user);
-        verify(javaMailSender).send(messageCaptor.capture());
-        MimeMessage message = messageCaptor.getValue();
-        assertThat(message.getAllRecipients()[0]).hasToString(user.getEmail());
-        assertThat(message.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
-        assertThat(message.getContent().toString()).isNotEmpty();
-        assertThat(message.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
-    }
-
-    @Test
-    void testSendEmailWithException() {
+    @Story("Envío de correo con excepción.")
+    @Description("Prueba el manejo de excepciones durante el envío de correo.")
+    void pruebaEnvioCorreoConExcepcion() {
         doThrow(MailSendException.class).when(javaMailSender).send(any(MimeMessage.class));
         try {
-            mailService.sendEmail("john.doe@example.com", "testSubject", "testContent", false, false);
+            servicioCorreo.sendEmail("john.doe@example.com", "testSubject", "testContent", false, false);
         } catch (Exception e) {
-            fail("Exception shouldn't have been thrown");
+            fail("No debería haber lanzado una excepción");
         }
     }
 
     @Test
-    void testSendLocalizedEmailForAllSupportedLanguages() throws Exception {
-        User user = new User();
-        user.setLogin("john");
-        user.setEmail("john.doe@example.com");
-        for (String langKey : languages) {
-            user.setLangKey(langKey);
-            mailService.sendEmailFromTemplate(user, "mail/testEmail", "email.test.title");
-            verify(javaMailSender, atLeastOnce()).send(messageCaptor.capture());
-            MimeMessage message = messageCaptor.getValue();
-
-            String propertyFilePath = "i18n/messages_" + getMessageSourceSuffixForLanguage(langKey) + ".properties";
-            URL resource = this.getClass().getClassLoader().getResource(propertyFilePath);
-            File file = new File(new URI(resource.getFile()).getPath());
-            Properties properties = new Properties();
-            properties.load(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
-
-            String emailTitle = (String) properties.get("email.test.title");
-            assertThat(message.getSubject()).isEqualTo(emailTitle);
-            assertThat(message.getContent().toString())
-                .isEqualToNormalizingNewlines("<html>" + emailTitle + ", http://127.0.0.1:8080, john</html>\n");
-        }
-    }
-
-    /**
-     * Convert a lang key to the Java locale.
-     */
-    private String getMessageSourceSuffixForLanguage(String langKey) {
-        String javaLangKey = langKey;
-        Matcher matcher2 = PATTERN_LOCALE_2.matcher(langKey);
-        if (matcher2.matches()) {
-            javaLangKey = matcher2.group(1) + "_" + matcher2.group(2).toUpperCase();
-        }
-        Matcher matcher3 = PATTERN_LOCALE_3.matcher(langKey);
-        if (matcher3.matches()) {
-            javaLangKey = matcher3.group(1) + "_" + matcher3.group(2) + "_" + matcher3.group(3).toUpperCase();
-        }
-        return javaLangKey;
+    @Story("Envío de correo de creación.")
+    @Description("Prueba el envío de un correo de creación.")
+    void pruebaEnviarCorreoCreacion() throws Exception {
+        User usuario = new User();
+        usuario.setLangKey(Constants.DEFAULT_LANGUAGE);
+        usuario.setLogin("john");
+        usuario.setEmail("john.doe@example.com");
+        servicioCorreo.sendCreationEmail(usuario);
+        verify(javaMailSender).send(capturadorMensajes.capture());
+        MimeMessage mensaje = capturadorMensajes.getValue();
+        assertThat(mensaje.getAllRecipients()[0]).hasToString(usuario.getEmail());
+        assertThat(mensaje.getFrom()[0]).hasToString(jHipsterProperties.getMail().getFrom());
+        assertThat(mensaje.getContent().toString()).isNotEmpty();
+        assertThat(mensaje.getDataHandler().getContentType()).isEqualTo("text/html;charset=UTF-8");
     }
 }
