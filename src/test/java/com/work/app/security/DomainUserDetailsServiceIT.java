@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import com.work.app.IntegrationTest;
 import com.work.app.domain.User;
 import com.work.app.repository.UserRepository;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import java.util.Locale;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,9 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Integrations tests for {@link DomainUserDetailsService}.
- */
+@Feature("Seguridad")
+@Story("Servicio de Detalles de Usuario del Dominio")
 @Transactional
 @IntegrationTest
 class DomainUserDetailsServiceIT {
@@ -37,6 +38,7 @@ class DomainUserDetailsServiceIT {
 
     @BeforeEach
     public void init() {
+        // Inicialización: Crear y guardar tres usuarios para las pruebas
         User userOne = new User();
         userOne.setLogin(USER_ONE_LOGIN);
         userOne.setPassword(RandomStringUtils.random(60));
@@ -70,6 +72,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserCanBeFoundByLogin() {
+        // Prueba que verifica que un usuario puede ser encontrado por su nombre de usuario
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_ONE_LOGIN);
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_ONE_LOGIN);
@@ -77,6 +80,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserCanBeFoundByLoginIgnoreCase() {
+        // Prueba que verifica que un usuario puede ser encontrado por su nombre de usuario sin tener en cuenta mayúsculas/minúsculas
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_ONE_LOGIN.toUpperCase(Locale.ENGLISH));
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_ONE_LOGIN);
@@ -84,6 +88,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserCanBeFoundByEmail() {
+        // Prueba que verifica que un usuario puede ser encontrado por su dirección de correo electrónico
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_TWO_EMAIL);
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_TWO_LOGIN);
@@ -91,6 +96,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserCanBeFoundByEmailIgnoreCase() {
+        // Prueba que verifica que un usuario puede ser encontrado por su dirección de correo electrónico sin tener en cuenta mayúsculas/minúsculas
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_TWO_EMAIL.toUpperCase(Locale.ENGLISH));
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_TWO_LOGIN);
@@ -98,6 +104,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatEmailIsPrioritizedOverLogin() {
+        // Prueba que verifica que el email tiene prioridad sobre el nombre de usuario cuando se busca un usuario
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(USER_ONE_EMAIL);
         assertThat(userDetails).isNotNull();
         assertThat(userDetails.getUsername()).isEqualTo(USER_ONE_LOGIN);
@@ -105,6 +112,7 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserNotActivatedExceptionIsThrownForNotActivatedUsers() {
+        // Prueba que verifica que se lanza una excepción para usuarios no activados
         assertThatExceptionOfType(UserNotActivatedException.class)
             .isThrownBy(() -> domainUserDetailsService.loadUserByUsername(USER_THREE_LOGIN));
     }
