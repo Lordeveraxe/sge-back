@@ -21,12 +21,23 @@ public class Variables implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "variables")
+    @Column(name = "nombre_variables", nullable = false)
+    private String nombre_variables;
+
+    @Column(name = "variables", nullable = false, columnDefinition = "json")
     private String variables;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "variables")
     @JsonIgnoreProperties(value = { "registros", "variables", "campo" }, allowSetters = true)
     private Set<Contadores> contadores = new HashSet<>();
+
+    public String getNombreVariables() {
+        return nombre_variables;
+    }
+
+    public void setNombreVariables(String nombre_variables) {
+        this.nombre_variables = nombre_variables;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -34,26 +45,26 @@ public class Variables implements Serializable {
         return this.id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Variables id(Long id) {
         this.setId(id);
         return this;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getVariables() {
         return this.variables;
     }
 
+    public void setVariables(String variables) {
+        this.variables = variables;
+    }
+
     public Variables variables(String variables) {
         this.setVariables(variables);
         return this;
-    }
-
-    public void setVariables(String variables) {
-        this.variables = variables;
     }
 
     public Set<Contadores> getContadores() {
@@ -109,9 +120,6 @@ public class Variables implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Variables{" +
-            "id=" + getId() +
-            ", variables='" + getVariables() + "'" +
-            "}";
+        return "Variables{" + "id=" + getId() + ", variables='" + getVariables() + "'" + "}";
     }
 }

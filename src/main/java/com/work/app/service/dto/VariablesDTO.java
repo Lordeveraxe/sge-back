@@ -12,8 +12,16 @@ import java.util.Objects;
 public class VariablesDTO implements Serializable {
 
     private Long id;
-
+    private String nombre_variables;
     private String variables;
+
+    public String getNombreVariables() {
+        return nombre_variables;
+    }
+
+    public void setNombrevariables(String nombre_variables) {
+        this.nombre_variables = nombre_variables;
+    }
 
     public Long getId() {
         return id;
@@ -36,11 +44,10 @@ public class VariablesDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof VariablesDTO)) {
+        if (!(o instanceof VariablesDTO variablesDTO)) {
             return false;
         }
 
-        VariablesDTO variablesDTO = (VariablesDTO) o;
         if (this.id == null) {
             return false;
         }
@@ -52,12 +59,8 @@ public class VariablesDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "VariablesDTO{" +
-            "id=" + getId() +
-            ", variables='" + getVariables() + "'" +
-            "}";
+        return "VariablesDTO{" + "id=" + id + ", tipo='" + nombre_variables + '\'' + ", variables='" + variables + '\'' + '}';
     }
 }
