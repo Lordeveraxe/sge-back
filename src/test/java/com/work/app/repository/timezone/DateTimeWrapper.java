@@ -36,6 +36,8 @@ public class DateTimeWrapper implements Serializable {
     @Column(name = "local_date")
     private LocalDate localDate;
 
+    // --- GETTERS Y SETTERS ---
+
     public Long getId() {
         return id;
     }
@@ -100,8 +102,11 @@ public class DateTimeWrapper implements Serializable {
         this.localDate = localDate;
     }
 
+    // --- MÉTODOS OVERRIDE ---
+
     @Override
     public boolean equals(Object o) {
+        // Método para comparar si dos objetos DateTimeWrapper son iguales basándose en su ID
         if (this == o) {
             return true;
         }
@@ -115,18 +120,26 @@ public class DateTimeWrapper implements Serializable {
 
     @Override
     public int hashCode() {
+        // Método para obtener el código hash del objeto basado en su ID
         return Objects.hashCode(getId());
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "TimeZoneTest{" +
-            "id=" + id +
-            ", instant=" + instant +
-            ", localDateTime=" + localDateTime +
-            ", offsetDateTime=" + offsetDateTime +
-            ", zonedDateTime=" + zonedDateTime +
-            '}';
+        // Método para representar el objeto DateTimeWrapper como una cadena de texto
+        return (
+            "TimeZoneTest{" +
+            "id=" +
+            id +
+            ", instant=" +
+            instant +
+            ", localDateTime=" +
+            localDateTime +
+            ", offsetDateTime=" +
+            offsetDateTime +
+            ", zonedDateTime=" +
+            zonedDateTime +
+            '}'
+        );
     }
 }
