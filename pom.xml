@@ -342,6 +342,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.23.0</version>
+        </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
