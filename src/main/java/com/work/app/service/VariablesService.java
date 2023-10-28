@@ -2,8 +2,8 @@ package com.work.app.service;
 
 import com.work.app.domain.Variables;
 import com.work.app.repository.VariablesRepository;
-import com.work.app.service.dto.VariablesDTO;
 import com.work.app.service.mapper.VariablesMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,69 +23,62 @@ public class VariablesService {
 
     private final VariablesRepository variablesRepository;
 
-    private final VariablesMapper variablesMapper;
-
-    public VariablesService(VariablesRepository variablesRepository, VariablesMapper variablesMapper) {
+    public VariablesService(VariablesRepository variablesRepository) {
         this.variablesRepository = variablesRepository;
-        this.variablesMapper = variablesMapper;
     }
 
     /**
      * Save a variables.
      *
-     * @param variablesDTO the entity to save.
+     * @param variables the entity to save.
      * @return the persisted entity.
      */
-    public VariablesDTO save(VariablesDTO variablesDTO) {
-        log.debug("Request to save Variables : {}", variablesDTO);
-        Variables variables = variablesMapper.toEntity(variablesDTO);
-        variables = variablesRepository.save(variables);
-        return variablesMapper.toDto(variables);
+    public Variables save(Variables variables) {
+        log.debug("Request to save Variables : {}", variables);
+        return variablesRepository.save(variables);
     }
 
     /**
      * Update a variables.
      *
-     * @param variablesDTO the entity to save.
+     * @param variables the entity to save.
      * @return the persisted entity.
      */
-    public VariablesDTO update(VariablesDTO variablesDTO) {
-        log.debug("Request to update Variables : {}", variablesDTO);
-        Variables variables = variablesMapper.toEntity(variablesDTO);
-        variables = variablesRepository.save(variables);
-        return variablesMapper.toDto(variables);
+    public Variables update(Variables variables) {
+        log.debug("Request to update Variables : {}", variables);
+        return variablesRepository.save(variables);
     }
 
     /**
      * Partially update a variables.
      *
-     * @param variablesDTO the entity to update partially.
+     * @param variables the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<VariablesDTO> partialUpdate(VariablesDTO variablesDTO) {
-        log.debug("Request to partially update Variables : {}", variablesDTO);
+    public Optional<Variables> partialUpdate(Variables variables) {
+        log.debug("Request to partially update Variables : {}", variables);
 
         return variablesRepository
-            .findById(variablesDTO.getId())
+            .findById(variables.getId())
             .map(existingVariables -> {
-                variablesMapper.partialUpdate(existingVariables, variablesDTO);
+                if (variables.getVariables() != null) {
+                    existingVariables.setVariables(variables.getVariables());
+                }
 
                 return existingVariables;
             })
-            .map(variablesRepository::save)
-            .map(variablesMapper::toDto);
+            .map(variablesRepository::save);
     }
 
     /**
      * Get all the variables.
      *
-     * @param pageable the pagination information.
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<VariablesDTO> findAll(Pageable pageable) {
+    public List<Variables> findAll() {
         log.debug("Request to get all Variables");
-        return variablesRepository.findAll(pageable).map(variablesMapper::toDto);
+        return variablesRepository.findAll();
     }
 
     /**
@@ -95,9 +88,9 @@ public class VariablesService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<VariablesDTO> findOne(Long id) {
+    public Optional<Variables> findOne(Long id) {
         log.debug("Request to get Variables : {}", id);
-        return variablesRepository.findById(id).map(variablesMapper::toDto);
+        return variablesRepository.findById(id);
     }
 
     /**

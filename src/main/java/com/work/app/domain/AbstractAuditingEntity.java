@@ -3,6 +3,7 @@ package com.work.app.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
@@ -28,7 +29,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
      *
      * @return El identificador de la entidad.
      */
-    public abstract T getId();
+    public abstract UUID getId();
 
     /**
      * Obtiene el nombre del usuario que creó esta entidad.

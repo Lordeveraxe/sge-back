@@ -1,5 +1,6 @@
 package com.work.app.web.rest;
 
+import com.work.app.domain.Variables;
 import com.work.app.repository.VariablesRepository;
 import com.work.app.service.VariablesService;
 import com.work.app.service.dto.VariablesDTO;
@@ -50,17 +51,17 @@ public class VariablesResource {
     /**
      * {@code POST  /variables} : Create a new variables.
      *
-     * @param variablesDTO the variablesDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new variablesDTO, or with status {@code 400 (Bad Request)} if the variables has already an ID.
+     * @param variables the variables to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new variables, or with status {@code 400 (Bad Request)} if the variables has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/variables")
-    public ResponseEntity<VariablesDTO> createVariables(@RequestBody VariablesDTO variablesDTO) throws URISyntaxException {
-        log.debug("REST request to save Variables : {}", variablesDTO);
-        if (variablesDTO.getId() != null) {
+    public ResponseEntity<Variables> createVariables(@RequestBody Variables variables) throws URISyntaxException {
+        log.debug("REST request to save Variables : {}", variables);
+        if (variables.getId() != null) {
             throw new BadRequestAlertException("A new variables cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        VariablesDTO result = variablesService.save(variablesDTO);
+        Variables result = variablesService.save(variables);
         return ResponseEntity
             .created(new URI("/api/variables/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -70,23 +71,23 @@ public class VariablesResource {
     /**
      * {@code PUT  /variables/:id} : Updates an existing variables.
      *
-     * @param id the id of the variablesDTO to save.
-     * @param variablesDTO the variablesDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated variablesDTO,
-     * or with status {@code 400 (Bad Request)} if the variablesDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the variablesDTO couldn't be updated.
+     * @param id the id of the variables to save.
+     * @param variables the variables to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated variables,
+     * or with status {@code 400 (Bad Request)} if the variables is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the variables couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/variables/{id}")
-    public ResponseEntity<VariablesDTO> updateVariables(
+    public ResponseEntity<Variables> updateVariables(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody VariablesDTO variablesDTO
+        @RequestBody Variables variables
     ) throws URISyntaxException {
-        log.debug("REST request to update Variables : {}, {}", id, variablesDTO);
-        if (variablesDTO.getId() == null) {
+        log.debug("REST request to update Variables : {}, {}", id, variables);
+        if (variables.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, variablesDTO.getId())) {
+        if (!Objects.equals(id, variables.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,34 +95,34 @@ public class VariablesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        VariablesDTO result = variablesService.update(variablesDTO);
+        Variables result = variablesService.update(variables);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, variablesDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, variables.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /variables/:id} : Partial updates given fields of an existing variables, field will ignore if it is null
      *
-     * @param id the id of the variablesDTO to save.
-     * @param variablesDTO the variablesDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated variablesDTO,
-     * or with status {@code 400 (Bad Request)} if the variablesDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the variablesDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the variablesDTO couldn't be updated.
+     * @param id the id of the variables to save.
+     * @param variables the variables to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated variables,
+     * or with status {@code 400 (Bad Request)} if the variables is not valid,
+     * or with status {@code 404 (Not Found)} if the variables is not found,
+     * or with status {@code 500 (Internal Server Error)} if the variables couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/variables/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<VariablesDTO> partialUpdateVariables(
+    public ResponseEntity<Variables> partialUpdateVariables(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody VariablesDTO variablesDTO
+        @RequestBody Variables variables
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Variables partially : {}, {}", id, variablesDTO);
-        if (variablesDTO.getId() == null) {
+        log.debug("REST request to partial update Variables partially : {}, {}", id, variables);
+        if (variables.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, variablesDTO.getId())) {
+        if (!Objects.equals(id, variables.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -129,45 +130,43 @@ public class VariablesResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<VariablesDTO> result = variablesService.partialUpdate(variablesDTO);
+        Optional<Variables> result = variablesService.partialUpdate(variables);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, variablesDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, variables.getId().toString())
         );
     }
 
     /**
      * {@code GET  /variables} : get all the variables.
      *
-     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of variables in body.
      */
     @GetMapping("/variables")
-    public ResponseEntity<List<VariablesDTO>> getAllVariables(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Variables>> getAllVariables() {
         log.debug("REST request to get a page of Variables");
-        Page<VariablesDTO> page = variablesService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        List<Variables> page = variablesService.findAll();
+        return ResponseEntity.ok().body(page);
     }
 
     /**
      * {@code GET  /variables/:id} : get the "id" variables.
      *
-     * @param id the id of the variablesDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the variablesDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the variables to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the variables, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/variables/{id}")
-    public ResponseEntity<VariablesDTO> getVariables(@PathVariable Long id) {
+    public ResponseEntity<Variables> getVariables(@PathVariable Long id) {
         log.debug("REST request to get Variables : {}", id);
-        Optional<VariablesDTO> variablesDTO = variablesService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(variablesDTO);
+        Optional<Variables> variables = variablesService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(variables);
     }
 
     /**
      * {@code DELETE  /variables/:id} : delete the "id" variables.
      *
-     * @param id the id of the variablesDTO to delete.
+     * @param id the id of the variables to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/variables/{id}")
