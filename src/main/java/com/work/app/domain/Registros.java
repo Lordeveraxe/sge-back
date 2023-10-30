@@ -20,15 +20,19 @@ public class Registros implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "fecha_registro_variable")
+    @Column(name = "fecha_registro_variable", nullable = false)
     private Instant fechaRegistroVariable;
 
-    @Column(name = "registro_variable_contador")
+    @Column(name = "registro_variable_contador", nullable = false, columnDefinition = "json")
     private String registroVariableContador;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnoreProperties(value = { "registros", "variables", "campo" }, allowSetters = true)
     private Contadores contadores;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "registros", "variables", "campo" }, allowSetters = true)
+    private Campos campo;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -111,5 +115,13 @@ public class Registros implements Serializable {
             ", fechaRegistroVariable='" + getFechaRegistroVariable() + "'" +
             ", registroVariableContador='" + getRegistroVariableContador() + "'" +
             "}";
+    }
+
+    public Campos getCampo() {
+        return campo;
+    }
+
+    public void setCampo(Campos campo) {
+        this.campo = campo;
     }
 }
